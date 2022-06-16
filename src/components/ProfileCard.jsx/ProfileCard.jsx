@@ -1,19 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../Firebase/useAuth";
 import Cover from "../../img/cover.jpg";
-import Profile from "../../img/profileImg.jpg";
 import "./ProfileCard.css";
 
 const ProfileCard = () => {
   const ProfilePage = true;
+  const { user } = useAuth();
+  const [isUser, setUser] = useState({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch(`http://localhost:4000/api/v1/users/${user.email}`, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("idToken")}`,
+      },
+    })
+      .then((res) => {
+        if (res.status == 201) {
+          return res.json();
+        } else if (res.status === 401) {
+          navigate("/sign-in");
+        }
+      })
+      .then((data) => setUser(data));
+  }, [user]);
+
   return (
     <div className="ProfileCard">
       <div className="ProfileImages">
         <img src={Cover} alt="" />
-        <img src={Profile} alt="" />
+        <img src={isUser.photo} alt="" />
       </div>
 
       <div className="ProfileName">
-        <span>Zendaya MJ</span>
+        <span>{user.displayName}</span>
         <span>Senior UI/UX Designer</span>
       </div>
 

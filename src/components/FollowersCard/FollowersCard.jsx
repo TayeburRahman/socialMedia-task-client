@@ -1,30 +1,42 @@
-import React from 'react'
-import './FollowersCard.css'
+import React, { useEffect, useState } from "react";
+import useAuth from "../../Firebase/useAuth";
+import "./FollowersCard.css";
 
-import { Followers } from '../../Data/FollowersData'
 const FollowersCard = () => {
+  const { user } = useAuth();
+  const [allUser, setAllUser] = useState([]);
+
+  useEffect(() => {
+    fetch(" http://localhost:4000/api/v2/allUsers")
+      .then((res) => {
+        if (res.status === 201) {
+          return res.json();
+        } else if (res.status === 401) {
+        }
+      })
+      .then((data) => setAllUser(data));
+  }, [user]);
+
   return (
     <div className="FollowersCard">
-        <h3>Who is following you</h3>
+      <h3>Who is following you</h3>
 
-        {Followers. map((follower, id)=>{
-            return(
-                <div className="follower">
-                    <div>
-                        <img src={follower.img} alt="" className='followerImage' />
-                        <div className="name">
-                            <span>{follower.name}</span>
-                            <span>@{follower.username}</span>
-                        </div>
-                    </div>
-                    <button className='button fc-button'>
-                        Follow
-                    </button>
-                </div>
-            )
-        })}
+      {allUser?.map((follower, id) => {
+        return (
+          <div className="follower">
+            <div>
+              <img src={follower.photo} alt="" className="followerImage" />
+              <div className="name">
+                <span>{follower.displayName}</span>
+                <span>@{follower.username}</span>
+              </div>
+            </div>
+            <button className="button fc-button">Follow</button>
+          </div>
+        );
+      })}
     </div>
-  )
-}
+  );
+};
 
-export default FollowersCard
+export default FollowersCard;

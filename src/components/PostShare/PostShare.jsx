@@ -3,8 +3,8 @@ import {
   UilPlayCircle,
   UilScenery,
   UilSchedule,
-  UilTimes,
 } from "@iconscout/react-unicons";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ const PostShare = () => {
   const [isUser, setUser] = useState({});
   const navigate = useNavigate();
   const [imageSelected, setImageSelected] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
   // Hook from
   const {
@@ -49,11 +50,11 @@ const PostShare = () => {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
       setImageSelected(img);
+      setLoading(true);
     }
   };
 
-  // submit handler
-  const onSubmit = (data) => {
+  if (imageSelected) {
     // Image uploader 2nd
     const formData = new FormData();
     formData.append("file", imageSelected);
@@ -66,12 +67,16 @@ const PostShare = () => {
           formData
         );
         setImage(response.data.url);
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
     };
     postImage();
+  }
 
+  // submit handler
+  const onSubmit = (data) => {
     // data save mongoDB
     data.userEmail = user.email;
     data.userName = user.displayName;
@@ -136,7 +141,13 @@ const PostShare = () => {
               <UilSchedule />
               Shedule
             </div>
-            <button className="button ps-button">Share</button>
+            <button className="button ps-button">
+              {isLoading ? (
+                <CircularProgress style={{ height: "20px", width: "20px" }} />
+              ) : (
+                "Share"
+              )}
+            </button>
             <div style={{ display: "none" }}>
               <input
                 type="file"
@@ -146,12 +157,6 @@ const PostShare = () => {
               />
             </div>
           </div>
-          {image && (
-            <div className="previewImage">
-              <UilTimes onClick={() => setImage(null)} />
-              <img src={image.image} alt="" />
-            </div>
-          )}
         </form>
       </div>
     </div>

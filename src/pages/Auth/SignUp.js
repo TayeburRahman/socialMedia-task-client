@@ -1,12 +1,12 @@
 import {
   UilScenery
 } from "@iconscout/react-unicons";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../Firebase/useAuth";
-import Logo from "../../img/logo.png";
 import "./Auth.css";
 
 
@@ -18,7 +18,7 @@ const SignUp = () => {
   return (
     <div className="Auth">
       <div className="a-left">
-        <img src={Logo} alt="" />
+        <img src='https://i.ibb.co/vkg8Hyq/unnamed.png' alt="" />
         <div className="Webname">
           <h1>ZKC Media</h1>
           <h6>Explore the ideas throughout the world</h6>
@@ -33,6 +33,7 @@ function Input() {
   const navigate = useNavigate() 
   const {registerUser}=useAuth()
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const [isLoading, setLoading] = useState(false);
 
   const [imageSelected, setImageSelected] = useState();
   const [photo, setImage] = useState('');  
@@ -44,21 +45,15 @@ function Input() {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0]; 
       setImageSelected(img); 
+      setLoading(true);
     }
   };
-
-  //   Register Button
-    const onSubmit = (e) => { 
-      if (e.password !== e.password2) {
-        alert("Your password did not match!"); 
-        return;
-      } 
-
+   if(imageSelected){
       // Image uploader 2nd
       const formData = new FormData()
       formData.append("file", imageSelected)
       formData.append("upload_preset", "mcem6nrq")
-   
+  
       const postImage = async () => {
         try {
           const response = await axios.post(
@@ -66,11 +61,25 @@ function Input() {
             formData 
           )
           setImage(response.data.url)
+          setLoading(false);
         } catch (error) {
           console.error(error)
         }
       } 
-      postImage()
+      postImage() 
+   }
+
+
+
+
+
+
+  //   Register Button
+    const onSubmit = (e) => { 
+      if (e.password !== e.password2) {
+        alert("Your password did not match!"); 
+        return;
+      } 
 
       // Register Firebase
        if(photo){
@@ -112,7 +121,11 @@ function Input() {
                <div>
                    <span style={{fontSize: '12px'}}>Already have an account. <Link to="/sign-in">Login!</Link></span>
                </div>
-               <input className="button infoButton" value="Sign Up"  type="submit" /> 
+               <input className="button infoButton" value={isLoading ? (
+                <CircularProgress style={{ height: "20px", width: "20px" }} />
+              ) : (
+                "Sign Up"
+              )}  type="submit" /> 
                <div style={{ display: "none" }}>
                  <input
                    type="file"
