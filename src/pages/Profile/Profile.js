@@ -5,6 +5,7 @@ import ProfileLeft from "../../components/ProfileLeft/ProfileLeft";
 import RightSide from "../../components/RightSide/RightSide";
 import "./Profile.css";
 const Profile = () => {
+  
   return (
     <div className="Profile">
       <ProfileLeft />

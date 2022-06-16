@@ -2,7 +2,6 @@ import { default as React } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../Firebase/useAuth";
-import Logo from "../../img/logo.png";
 import "./Auth.css";
 
 
@@ -11,7 +10,7 @@ const LogIn = () => {
   return (
     <div className="Auth">
       <div className="a-left">
-        <img src={Logo} alt="" />
+        <img src='https://i.ibb.co/vkg8Hyq/unnamed.png' alt="" />
         <div className="Webname">
           <h1>ZKC Media</h1>
           <h6>Explore the ideas throughout the world</h6>
@@ -22,6 +21,7 @@ const LogIn = () => {
     </div>
   );
 };
+
 function Input() {
   const { loginUser, user, authError } = useAuth(); 
   const location = useLocation();
