@@ -10,6 +10,23 @@ const ProfileCard = () => {
   const [isUser, setUser] = useState({});
   const navigate = useNavigate();
 
+  const [isPost, setUserPost] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:4000/api/v2/post/${user.email}`, {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("idToken")}`,
+      },
+    })
+      .then((res) => {
+        if (res.status === 201) {
+          return res.json();
+        } else if (res.status === 401) {
+        }
+      })
+      .then((data) => setUserPost(data?.post));
+  }, [isPost]);
+
   useEffect(() => {
     fetch(`http://localhost:4000/api/v1/users/${user.email}`, {
       headers: {
@@ -42,12 +59,12 @@ const ProfileCard = () => {
         <hr />
         <div>
           <div className="follow">
-            <span>6,890</span>
+            <span>0000</span>
             <span>Followings</span>
           </div>
           <div className="vl"></div>
           <div className="follow">
-            <span>1</span>
+            <span>0</span>
             <span>Followers</span>
           </div>
 
@@ -55,7 +72,7 @@ const ProfileCard = () => {
             <>
               <div className="vl"></div>
               <div className="follow">
-                <span>3</span>
+                <span>{isPost?.length}</span>
                 <span>Posts</span>
               </div>
             </>
